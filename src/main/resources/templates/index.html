@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Blackjack Spark Java</title>
+    <style>
+        /* Estilos CSS (Adicionados para melhor visualização) */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            margin-top: 50px; 
+            background-color: #1e4d2b; /* Fundo verde escuro (mesa de jogo) */
+            color: #f0f0f0;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #2c6e49; /* Fundo mais claro para o conteúdo */
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        .hand-box {
+            border: 1px solid #a6c4b2;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            background-color: #388e3c;
+            text-align: left;
+        }
+        h1 { color: #ffe082; } 
+        h2 { color: #f0f4c3; margin-top: 5px; } 
+        .status-message {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffcdd2; 
+            margin-bottom: 20px;
+        }
+        .actions button {
+            padding: 10px 20px;
+            font-size: 1em;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .actions .hit-btn { background-color: #ffb74d; color: #333; }
+        .actions .stand-btn { background-color: #64b5f6; color: #333; }
+        .actions .new-game-btn { background-color: #81c784; color: #333; }
+        .actions button:hover:enabled { opacity: 0.8; }
+        .actions button:disabled { background-color: #757575; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Blackjack em Java Web (Spark + Padrões)</h1>
+
+        <p class="status-message" th:text="${gameData.statusMessage}"></p>
+
+        <div class="actions">
+            <form action="/new-game" method="post" style="display:inline;"> 
+                <button type="submit" class="new-game-btn">Novo Jogo</button>
+            </form>
+
+            <form action="/hit" method="post" style="display:inline;">
+                <button type="submit" class="hit-btn" th:disabled="${gameData.isGameOver()} or !${gameData.isPlayersTurn()}">HIT (Pedir Carta)</button>
+            </form>
+
+            <form action="/stand" method="post" style="display:inline;">
+                <button type="submit" class="stand-btn" th:disabled="${gameData.isGameOver()} or !${gameData.isPlayersTurn()}">STAND (Manter)</button>
+            </form>
+        </div>
+
+        <div class="hand-box">
+            <h2>Mão do Dealer: 
+                <span th:if="${gameData.isGameOver() or not gameData.isPlayersTurn()}" th:text="${gameData.getDealerValue(false)}"></span>
+                <span th:unless="${gameData.isGameOver() or not gameData.isPlayersTurn()}" th:text="${gameData.getDealerValue(true)}"></span>
+            </h2>
+            <p>Cartas: 
+                <span th:text="${gameData.getDealerHandDetails(gameData.isPlayersTurn())}"></span>
+            </p>
+        </div>
+
+        <div class="hand-box">
+            <h2>Sua Mão (Jogador): <span th:text="${gameData.getPlayerValue()}"></span></h2>
+            <p>Cartas: <span th:text="${gameData.getPlayerHandDetails()}"></span></p>
+        </div>
+        
+    </div>
+</body>
+</html>
